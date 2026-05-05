@@ -1,0 +1,194 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── Leaflet CSS ─────────────────────────────────────────────────────────── */
+@import 'leaflet/dist/leaflet.css';
+
+/* ─── Design tokens ────────────────────────────────────────────────────────── */
+@layer base {
+  :root {
+    /* Backgrounds */
+    --background: 210 20% 98%;
+    --foreground: 222 39% 10%;
+
+    /* Card / surface */
+    --card: 0 0% 100%;
+    --card-foreground: 222 39% 10%;
+
+    /* Popover */
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 39% 10%;
+
+    /* Primary — ACT deep blue */
+    --primary: 214 100% 27%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary */
+    --secondary: 210 30% 95%;
+    --secondary-foreground: 222 39% 10%;
+
+    /* Muted */
+    --muted: 210 30% 95%;
+    --muted-foreground: 215 16% 45%;
+
+    /* Accent — warm amber gold */
+    --accent: 43 96% 52%;
+    --accent-foreground: 222 39% 10%;
+
+    /* Destructive */
+    --destructive: 0 84% 58%;
+    --destructive-foreground: 0 0% 100%;
+
+    /* Border / input / ring */
+    --border: 214 25% 88%;
+    --input: 214 25% 88%;
+    --ring: 214 100% 27%;
+
+    /* Radius */
+    --radius: 0.5rem;
+
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.04);
+    --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.07), 0 1px 2px -1px rgb(0 0 0 / 0.07);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.07);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.07), 0 4px 6px -4px rgb(0 0 0 / 0.07);
+  }
+
+  .dark {
+    --background: 222 39% 7%;
+    --foreground: 210 30% 96%;
+
+    --card: 222 39% 10%;
+    --card-foreground: 210 30% 96%;
+
+    --popover: 222 39% 10%;
+    --popover-foreground: 210 30% 96%;
+
+    --primary: 214 80% 56%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 222 30% 16%;
+    --secondary-foreground: 210 30% 96%;
+
+    --muted: 222 30% 16%;
+    --muted-foreground: 215 16% 55%;
+
+    --accent: 43 96% 52%;
+    --accent-foreground: 222 39% 10%;
+
+    --destructive: 0 72% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 222 25% 20%;
+    --input: 222 25% 20%;
+    --ring: 214 80% 56%;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-feature-settings: 'rlig' 1, 'calt' 1;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply tracking-tight;
+  }
+}
+
+/* ─── Typography utilities ─────────────────────────────────────────────────── */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  .text-pretty {
+    text-wrap: pretty;
+  }
+
+  /* Focus ring that matches brand */
+  .focus-ring {
+    @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2;
+  }
+
+  /* Section padding */
+  .section-py {
+    @apply py-16 md:py-20 lg:py-24;
+  }
+
+  /* Card hover lift */
+  .card-hover {
+    @apply transition-all duration-200 hover:shadow-md hover:-translate-y-0.5;
+  }
+}
+
+/* ─── Scrollbar styling ─────────────────────────────────────────────────────── */
+@layer base {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--border)) transparent;
+  }
+
+  *::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--border));
+    border-radius: 3px;
+  }
+}
+
+/* ─── Map overrides ─────────────────────────────────────────────────────────── */
+.leaflet-container {
+  font-family: inherit;
+  z-index: 0;
+}
+
+.leaflet-popup-content-wrapper {
+  border-radius: 0.5rem;
+  box-shadow: var(--shadow-md);
+  border: 1px solid hsl(var(--border));
+}
+
+.leaflet-popup-tip {
+  background: hsl(var(--card));
+}
+
+.leaflet-popup-content {
+  margin: 0;
+  padding: 0;
+}
+
+.leaflet-control-zoom {
+  border: 1px solid hsl(var(--border)) !important;
+  border-radius: 0.375rem !important;
+  overflow: hidden;
+}
+
+.leaflet-control-zoom-in,
+.leaflet-control-zoom-out {
+  color: hsl(var(--foreground)) !important;
+  background: hsl(var(--card)) !important;
+  border-color: hsl(var(--border)) !important;
+}
+
+.leaflet-control-zoom-in:hover,
+.leaflet-control-zoom-out:hover {
+  background: hsl(var(--muted)) !important;
+}
+
+/* ─── Print styles ──────────────────────────────────────────────────────────── */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
