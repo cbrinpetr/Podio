@@ -1,14 +1,16 @@
 import type { Metadata } from 'next'
-import dynamic from 'next/dynamic'
-import { getAllEntities } from '@/lib/data/entities'
+import nextDynamic from 'next/dynamic'
+import { getAllEntitiesFromDB } from '@/lib/data/db-entities'
 import type { EntitySummary } from '@/types/entity'
+
+export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
   title: 'Map',
   description: 'Explore the ACT innovation ecosystem on an interactive map.',
 }
 
-const MapView = dynamic(
+const MapView = nextDynamic(
   () => import('@/components/map/map-view').then((m) => m.MapView),
   {
     ssr: false,
@@ -20,8 +22,8 @@ const MapView = dynamic(
   }
 )
 
-export default function MapPage() {
-  const entities = getAllEntities() as unknown as EntitySummary[]
+export default async function MapPage() {
+  const entities = (await getAllEntitiesFromDB()) as unknown as EntitySummary[]
 
   return (
     <div className="flex flex-col" style={{ height: 'calc(100vh - 4rem)' }}>

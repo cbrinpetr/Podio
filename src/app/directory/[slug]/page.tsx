@@ -5,7 +5,9 @@ import {
   Globe, Mail, Phone, MapPin, Calendar, DollarSign,
   ArrowLeft, ExternalLink, Users, Tag
 } from 'lucide-react'
+import { getEntityBySlugFromDB, getRelatedEntitiesFromDB } from '@/lib/data/db-entities'
 import { getEntityBySlug, getRelatedEntities } from '@/lib/data/entities'
+import { ClaimButton } from '@/components/entity/claim-button'
 import { EntityTypeBadge } from '@/components/entity/entity-type-badge'
 import { EntityCard } from '@/components/entity/entity-card'
 import { Badge } from '@/components/ui/badge'
@@ -20,13 +22,12 @@ interface PageProps {
   params: { slug: string }
 }
 
+export const dynamic = 'force-dynamic'
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const entity = getEntityBySlug(params.slug)
+  const entity = await getEntityBySlugFromDB(params.slug) ?? getEntityBySlug(params.slug)
   if (!entity) return {}
-  return {
-    title: entity.name,
-    description: entity.shortDescription,
-  }
+  return { title: entity.name, description: entity.shortDescription }
 }
 
 const DELIVERY_LABELS: Record<string, string> = {
@@ -64,11 +65,11 @@ const VERIFICATION_LABELS: Record<string, { label: string; colour: string }> = {
   'community-verified': { label: 'Community Verified', colour: 'text-purple-700 bg-purple-50 border-purple-200' },
 }
 
-export default function EntityDetailPage({ params }: PageProps) {
-  const entity = getEntityBySlug(params.slug)
+export default async function EntityDetailPage({ params }: PageProps) {
+  const entity = await getEntityBySlugFromDB(params.slug) ?? getEntityBySlug(params.slug)
   if (!entity) notFound()
 
-  const related = getRelatedEntities(entity, 3)
+  const related = await getRelatedEntitiesFromDB(entity, 3)
   const verification = VERIFICATION_LABELS[entity.verificationStatus]
 
   const locationStr = entity.location
@@ -189,6 +190,9 @@ export default function EntityDetailPage({ params }: PageProps) {
 
         {/* Sidebar */}
         <aside className="space-y-6">
+          {/* Claim button */}
+          <ClaimButton entityId={entity.id} entityName={entity.name} />
+
           {/* Contact / links */}
           <div className="rounded-xl border bg-card p-5 space-y-4">
             {entity.website && (

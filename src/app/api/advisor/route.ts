@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import Anthropic from '@anthropic-ai/sdk'
-import { getAllEntities } from '@/lib/data/entities'
+import { getAllEntitiesFromDB } from '@/lib/data/db-entities'
 
 export const maxDuration = 30
 
@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
       .filter((m: any) => m.role === 'user' || m.role === 'assistant')
       .map((m: any) => ({ role: m.role as 'user' | 'assistant', content: String(m.content) }))
 
-    const entityList = getAllEntities()
+    const entityList = (await getAllEntitiesFromDB())
       .map((e) => `- **${e.name}** (${e.entityType}): ${e.shortDescription}`)
       .join('\n')
 

@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { Suspense } from 'react'
 import { SlidersHorizontal } from 'lucide-react'
-import { listEntities } from '@/lib/data/entities'
+import { listEntitiesFromDB } from '@/lib/data/db-entities'
 import { EntityGrid } from '@/components/directory/entity-grid'
 import { FilterPanel } from '@/components/directory/filter-panel'
 import { SearchBar } from '@/components/directory/search-bar'
@@ -34,7 +34,9 @@ function asArray<T>(val: string | string[] | undefined): T[] | undefined {
   return (Array.isArray(val) ? val : [val]) as T[]
 }
 
-export default function DirectoryPage({ searchParams }: PageProps) {
+export const dynamic = 'force-dynamic'
+
+export default async function DirectoryPage({ searchParams }: PageProps) {
   const filter: FilterState = {
     q: searchParams.q,
     type: asArray<EntityTypeSlug>(searchParams.type),
@@ -49,7 +51,7 @@ export default function DirectoryPage({ searchParams }: PageProps) {
     sort: searchParams.sort as any,
   }
 
-  const { entities, pagination } = listEntities(filter)
+  const { entities, pagination } = await listEntitiesFromDB(filter)
 
   // Build a plain object version of searchParams for EntityGrid
   const plainParams: Record<string, string | string[]> = {}

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { listEntities } from '@/lib/data/entities'
+import { listEntitiesFromDB } from '@/lib/data/db-entities'
 import type { FilterState } from '@/types/entity'
 
 export async function GET(req: NextRequest) {
@@ -19,6 +19,6 @@ export async function GET(req: NextRequest) {
     sort: (sp.get('sort') as any) ?? undefined,
   }
 
-  const result = listEntities(filter)
+  const result = await listEntitiesFromDB(filter)
   return NextResponse.json(result)
 }

@@ -1,0 +1,89 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL_UNPOOLED")
+}
+
+model Entity {
+  id                   String    @id @default(cuid())
+  slug                 String    @unique
+  name                 String
+  shortDescription     String
+  description          String?
+  entityType           String
+  organisationType     String?
+  deliveryMode         String?
+  geographicCoverage   String?
+  costType             String?
+  costDescription      String?
+  status               String    @default("draft")
+  verificationStatus   String    @default("unverified")
+  isFeatured           Boolean   @default(false)
+  logoUrl              String?
+  bannerUrl            String?
+  website              String?
+  email                String?
+  phone                String?
+  sectors              Json      @default("[]")
+  audiences            Json      @default("[]")
+  stages               Json      @default("[]")
+  tags                 Json      @default("[]")
+  contacts             Json      @default("[]")
+  socialLinks          Json?
+  // Location
+  locationAddressLine1 String?
+  locationSuburb       String?
+  locationState        String?
+  locationPostcode     String?
+  locationLatitude     Float?
+  locationLongitude    Float?
+  locationPrecinct     String?
+  locationIsVirtual    Boolean   @default(false)
+  locationNotes        String?
+  // Financial
+  fundingAmount        Float?
+  // Dates
+  foundedYear          Int?
+  programStartDate     DateTime?
+  programEndDate       DateTime?
+  applicationDeadline  DateTime?
+  // Meta
+  viewCount            Int       @default(0)
+  sourceUrl            String?
+  publishedAt          DateTime?
+  lastReviewedAt       DateTime?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  claimRequests ClaimRequest[]
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String?
+  passwordHash String
+  role         String   @default("admin")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model ClaimRequest {
+  id           String    @id @default(cuid())
+  entityId     String
+  entity       Entity    @relation(fields: [entityId], references: [id], onDelete: Cascade)
+  name         String
+  position     String
+  description  String
+  email        String
+  status       String    @default("pending")
+  inviteToken  String?   @unique
+  inviteExpiry DateTime?
+  invitedAt    DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}

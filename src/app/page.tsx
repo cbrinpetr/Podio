@@ -5,13 +5,17 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { EntityCard } from '@/components/entity/entity-card'
 import { SearchBar } from '@/components/directory/search-bar'
-import { getFeaturedEntities, getEntityStats } from '@/lib/data/entities'
+import { getFeaturedEntitiesFromDB, getEntityStatsFromDB } from '@/lib/data/db-entities'
 import { ENTITY_TYPES } from '@/lib/constants/taxonomy'
 import { EntityTypeIcon } from '@/components/entity/entity-type-icon'
 
-export default function HomePage() {
-  const featured = getFeaturedEntities(6)
-  const stats = getEntityStats()
+export const dynamic = 'force-dynamic'
+
+export default async function HomePage() {
+  const [featured, stats] = await Promise.all([
+    getFeaturedEntitiesFromDB(6),
+    getEntityStatsFromDB(),
+  ])
 
   return (
     <>
